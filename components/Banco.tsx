@@ -2,11 +2,19 @@ import React from 'react';
 import { View, Button } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 
+//variáveis do crud
+let nome = "Renan" 
+let alterar = "Renan Edit"
+let editar = "Renan Alterado"
+let selecionar = "Renan Alterado"
+let deletar = "Renan edit"
+
 let db;
 
 //componente
 const Banco = () => {
     
+    //criar banco
     async function Banco() {
         db = await SQLite.openDatabaseAsync('PAM2');
         if (db) {
@@ -20,64 +28,82 @@ const Banco = () => {
 
     //criar tabela
     async function CriarTabela() {
-
-        db = await Banco();
-
         try {
-            await db.execAsync(`
+            db = await Banco();  
+            const result = await db.execAsync(`
                 PRAGMA journal_mode = WAL;
                 CREATE TABLE IF NOT EXISTS TB_USUARIO (
-                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 nome TEXT NOT NULL);`
-            )
-            console.log("tabela criada")
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    nome TEXT NOT NULL
+                );
+            `);
+            console.log("Tabela TB_USUARIO criada");
         } catch (erro) {
-            console.log("Erro")
+            console.error("Erro ao criar tabela:", erro);
         }
     }
-
-    async function Inserir() {
-
-        db = await Banco();
-
+    
+    //inserir dados 
+    async function Inserir(nomes) {
         try {
-            db.execAsync(
-                ` INSERT INTO TB_USUARIO (nome)
-                   VALUES ('Ricardo'),
-                          ('Zé Matraca'),
-                          ('Maria ');                          
-                 `
-            );
-            console.log('Inserido');
+            const db = await Banco();
 
+            // Montar dinamicamente os valores
+            const valores = nomes.map(nome => `('${nome}')`).join(',');
+
+            await db.execAsync(`
+                INSERT INTO TB_USUARIO (nome) VALUES ${valores};
+            `);
+            console.log('✅ Dados inseridos com sucesso!');
         } catch (erro) {
-            console.log('Erro' + erro)
+            console.error('❌ Erro ao inserir:', erro);
         }
     }
 
-    async function Editar() { 
-        
-        db = await Banco();
-
-
+    //editar dados
+    async function Editar(nome, alterar) {
+        try {
+            const db = await Banco();
+            await db.execAsync(`
+                UPDATE TB_USUARIO
+                SET nome = '${alterar}'
+                WHERE nome = '${nome}';
+            `);
+            console.log('✏️ Usuário editado com sucesso!');
+        } catch (erro) {
+            console.error('❌ Erro ao editar usuário:', erro);
+        }
     }
 
-    async function Exibir() {
-        
+    //selecionar todos os dados
+    async function SelecionarTudo() { 
         db = await Banco();
-
-        const allRows = await db.getAllAsync('SELECT * FROM tb_usuario');
+        const allRows = await db.getAllAsync('SELECT * FROM TB_USUARIO;');
         for (const row of allRows) {
             console.log(row.id, row.nome);
         }
     }
 
-    async function Deletar() { 
-
+    //selecionar dados
+    async function Selecionar(nome) { 
         db = await Banco();
+        const allRows = await db.getAllAsync(`SELECT * FROM TB_USUARIO WHERE nome = '${nome}';`);
+        for (const row of allRows) {
+            console.log(row.id, row.nome);
+        }
+    }
 
-        await db.runAsync('DELETE FROM TB_USUARIO WHERE nome = $value', { $value: 'Renan 1' });
-        console.log("Usuário deletado");
+    //deletar dados
+    async function Deletar(nome) {
+        try {
+            const db = await Banco();
+            await db.execAsync(`
+                DELETE FROM TB_USUARIO WHERE nome = '${nome}';
+            `);
+            console.log(`🗑️ Usuários com nome "${nome}" deletados com sucesso!`);
+        } catch (erro) {
+            console.error('❌ Erro ao deletar usuários:', erro);
+        }
     }
 
     return (
@@ -93,23 +119,28 @@ const Banco = () => {
 
             <Button
                 title="Inserir"
-                onPress={Inserir}
+                onPress={() => Inserir([nome])}
             />
 
             <Button
                 title="Editar"
-                onPress={Editar}
+                onPress={() => Editar(editar, alterar)}
             />
+
+            <Button
+                title="Exibir Tudo"
+                onPress={() => SelecionarTudo()}
+            />      
 
             <Button
                 title="Exibir"
-                onPress={Exibir}
-            />
+                onPress={() => Selecionar([selecionar])}
+            />    
 
             <Button
                 title="Deletar"
-                onPress={Deletar}
-            />
+                onPress={() => Deletar([deletar])}
+            />     
         </View>
     )
 }
