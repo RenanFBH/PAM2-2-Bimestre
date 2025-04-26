@@ -6,8 +6,8 @@ import * as SQLite from 'expo-sqlite';
 let nome = "Renan" 
 let alterar = "Renan Edit"
 let editar = "Renan Alterado"
-let selecionar = "Renan Alterado"
-let deletar = "Renan edit"
+let selecionar = "Renan Edit"
+let deletar = "Renan Edit"
 
 let db;
 
@@ -87,10 +87,8 @@ const Banco = () => {
     //selecionar dados
     async function Selecionar(nome) { 
         db = await Banco();
-        const allRows = await db.getAllAsync(`SELECT * FROM TB_USUARIO WHERE nome = '${nome}';`);
-        for (const row of allRows) {
-            console.log(row.id, row.nome);
-        }
+        const firstRow = await db.getFirstAsync(`SELECT * FROM TB_USUARIO WHERE nome = '${nome}';`);
+        console.log(firstRow.id, firstRow.nome);
     }
 
     //deletar dados
