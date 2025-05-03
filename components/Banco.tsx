@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Button } from 'react-native';
+import { Text, View, Button, Pressable } from 'react-native';
 import * as SQLite from 'expo-sqlite';
+import estilo from './css/Estilo'
 
 //variáveis do crud
 let nome = "Renan" 
@@ -106,39 +107,27 @@ const Banco = () => {
 
     return (
         <View>
-            <Button
-                title="Criar BD"
-                onPress={Banco}
-            />
-            <Button
-                title="Criar Tabela"
-                onPress={CriarTabela}
-            />
-
-            <Button
-                title="Inserir"
-                onPress={() => Inserir([nome])}
-            />
-
-            <Button
-                title="Editar"
-                onPress={() => Editar(editar, alterar)}
-            />
-
-            <Button
-                title="Exibir Tudo"
-                onPress={() => SelecionarTudo()}
-            />      
-
-            <Button
-                title="Exibir"
-                onPress={() => Selecionar([selecionar])}
-            />    
-
-            <Button
-                title="Deletar"
-                onPress={() => Deletar([deletar])}
-            />     
+            <Pressable style={estilo.btn} onPress={Banco} >
+                <Text style={estilo.txt}>Criar Banco</Text>
+            </Pressable>
+            <Pressable style={estilo.btn} onPress={CriarTabela} >
+                <Text style={estilo.txt}>Criar tabela</Text>
+            </Pressable>
+            <Pressable style={estilo.btn} onPress={() => Inserir([nome])} >
+                <Text style={estilo.txt}>Inserir dados</Text>
+            </Pressable>
+            <Pressable style={estilo.btn} onPress={() => Editar(editar, alterar)} >
+                <Text style={estilo.txt}>Editar Dados</Text>
+            </Pressable>
+            <Pressable style={estilo.btn} onPress={() => SelecionarTudo()} >      
+                <Text style={estilo.txt}>Selecionar Tudo</Text>
+            </Pressable>
+            <Pressable style={estilo.btn} onPress={() => Selecionar([selecionar])} >    
+                <Text style={estilo.txt}>Selecionar</Text>
+            </Pressable>
+            <Pressable style={estilo.btn} onPress={() => Deletar([deletar])} >    
+                <Text style={estilo.txt}>Deletar Dados</Text>
+            </Pressable> 
         </View>
     )
 }
