@@ -9,7 +9,8 @@ export default function App() {
     <ImageBackground
       source={require('./components/img/bg.jpg')}
       style={estilo.container}>
-      <Banco/>
+      <Text style={estilo.titulo}>SQLite CRUD</Text>
+      <Banco style={estilo.article}/>
     </ImageBackground>
   );
 }

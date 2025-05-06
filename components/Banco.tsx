@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Button, Pressable } from 'react-native';
+import { Text, View, Button, Pressable, Alert } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import estilo from './css/Estilo'
 
