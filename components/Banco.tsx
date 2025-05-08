@@ -1,33 +1,31 @@
 import React from 'react';
-import { Text, View, Button, Pressable, Alert } from 'react-native';
+import { Text, View, Pressable, Alert } from 'react-native';
 import * as SQLite from 'expo-sqlite';
-import estilo from './css/Estilo'
+import estilo from './css/Estilo';
 
 //variáveis do crud
-let nome = "Renan" 
-let alterar = "Renan Edit"
-let editar = "Renan Alterado"
-let selecionar = "Renan Edit"
-let deletar = "Renan Edit"
+let nome = "usuario1";
+let alterar = "usuario2";
+let editar = "usuario1";
+let selecionar = "usuario2";
+let deletar = "usuario2";
 
 let db;
 
-//componente
 const Banco = () => {
-    
-    //criar banco
+
     async function Banco() {
         db = await SQLite.openDatabaseAsync('PAM2');
         if (db) {
             console.log("Banco criado");
+            Alert.alert("Banco", "Banco criado com sucesso!");
             return db;
-        }
-        else {
+        } else {
             console.log("Erro ao criar Banco");
+            Alert.alert("Erro", "Erro ao criar banco!");
         }
     }
 
-    //criar tabela
     async function CriarTabela() {
         try {
             db = await Banco();  
@@ -39,29 +37,28 @@ const Banco = () => {
                 );
             `);
             console.log("Tabela TB_USUARIO criada");
+            Alert.alert("Tabela", "Tabela criada com sucesso!");
         } catch (erro) {
             console.error("Erro ao criar tabela:", erro);
+            Alert.alert("Erro", "Erro ao criar tabela!");
         }
     }
-    
-    //inserir dados 
+
     async function Inserir(nomes) {
         try {
             const db = await Banco();
-
-            // Montar dinamicamente os valores
             const valores = nomes.map(nome => `('${nome}')`).join(',');
-
             await db.execAsync(`
                 INSERT INTO TB_USUARIO (nome) VALUES ${valores};
             `);
             console.log('✅ Dados inseridos com sucesso!');
+            Alert.alert("Inserção", "Dados inseridos com sucesso!");
         } catch (erro) {
             console.error('❌ Erro ao inserir:', erro);
+            Alert.alert("Erro", "Erro ao inserir dados!");
         }
     }
 
-    //editar dados
     async function Editar(nome, alterar) {
         try {
             const db = await Banco();
@@ -71,28 +68,46 @@ const Banco = () => {
                 WHERE nome = '${nome}';
             `);
             console.log('✏️ Usuário editado com sucesso!');
+            Alert.alert("Edição", "Usuário editado com sucesso!");
         } catch (erro) {
             console.error('❌ Erro ao editar usuário:', erro);
+            Alert.alert("Erro", "Erro ao editar usuário!");
         }
     }
 
-    //selecionar todos os dados
-    async function SelecionarTudo() { 
-        db = await Banco();
-        const allRows = await db.getAllAsync('SELECT * FROM TB_USUARIO;');
-        for (const row of allRows) {
-            console.log(row.id, row.nome);
+    async function SelecionarTudo() {
+        try {
+            db = await Banco();
+            const allRows = await db.getAllAsync('SELECT * FROM TB_USUARIO;');
+    
+            if (allRows.length === 0) {
+                Alert.alert("Consulta", "Nenhum usuário encontrado.");
+                return;
+            }
+    
+            const dadosFormatados = allRows
+                .map(row => `ID: ${row.id} - Nome: ${row.nome}`)
+                .join('\n');
+    
+            Alert.alert("Usuários cadastrados", dadosFormatados);
+        } catch (erro) {
+            console.error("Erro ao selecionar dados:", erro);
+            Alert.alert("Erro", "Erro ao consultar usuários!");
         }
     }
+    
 
-    //selecionar dados
     async function Selecionar(nome) { 
         db = await Banco();
         const firstRow = await db.getFirstAsync(`SELECT * FROM TB_USUARIO WHERE nome = '${nome}';`);
-        console.log(firstRow.id, firstRow.nome);
+        if (firstRow) {
+            console.log(firstRow.id, firstRow.nome);
+            Alert.alert("Consulta", `Usuário encontrado: ID - ${firstRow.id}, Nome: ${firstRow.nome}`);
+        } else {
+            Alert.alert("Consulta", "Usuário não encontrado.");
+        }
     }
 
-    //deletar dados
     async function Deletar(nome) {
         try {
             const db = await Banco();
@@ -100,8 +115,10 @@ const Banco = () => {
                 DELETE FROM TB_USUARIO WHERE nome = '${nome}';
             `);
             console.log(`🗑️ Usuários com nome "${nome}" deletados com sucesso!`);
+            Alert.alert("Exclusão", `Usuário "${nome}" deletado com sucesso!`);
         } catch (erro) {
             console.error('❌ Erro ao deletar usuários:', erro);
+            Alert.alert("Erro", "Erro ao deletar usuário!");
         }
     }
 
@@ -119,13 +136,13 @@ const Banco = () => {
             <Pressable style={estilo.btn} onPress={() => Editar(editar, alterar)} >
                 <Text style={estilo.txt}>Editar Dados</Text>
             </Pressable>
-            <Pressable style={estilo.btn} onPress={() => SelecionarTudo()} >      
+            <Pressable style={estilo.btn} onPress={SelecionarTudo} >      
                 <Text style={estilo.txt}>Selecionar Tudo</Text>
             </Pressable>
-            <Pressable style={estilo.btn} onPress={() => Selecionar([selecionar])} >    
+            <Pressable style={estilo.btn} onPress={() => Selecionar(selecionar)} >    
                 <Text style={estilo.txt}>Selecionar</Text>
             </Pressable>
-            <Pressable style={estilo.btn} onPress={() => Deletar([deletar])} >    
+            <Pressable style={estilo.btn} onPress={() => Deletar(deletar)} >    
                 <Text style={estilo.txt}>Deletar Dados</Text>
             </Pressable> 
         </View>

@@ -1,10 +1,8 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-// Constantes das dimensões da tela
 const { width, height } = Dimensions.get("window");
 
-// Função default
-export default estilo = new StyleSheet.create({
+export default estilo = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -12,9 +10,10 @@ export default estilo = new StyleSheet.create({
     justifyContent: "center"
   },
   btn: {
-    backgroundColor: "#808080",
+    backgroundColor: "#000",
     padding: height * 0.02,
     borderRadius: 15,
+    borderWidth: 2,
     borderColor: "#ffffff",
     marginBottom: 0.01 * height,
   },
@@ -25,11 +24,14 @@ export default estilo = new StyleSheet.create({
   titulo: {
     color: "#fff",
     fontSize: 40,
-    backgroundColor: "#595959",
+    backgroundColor: "#000",
     borderRadius: 10,
     padding: 10,
+    borderWidth: 2,
+    borderColor: "#fff",
     marginBottom: 0.1 * height
   }
 });
+
 
 
