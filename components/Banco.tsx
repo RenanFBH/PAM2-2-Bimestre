@@ -51,10 +51,10 @@ const Banco = () => {
             await db.execAsync(`
                 INSERT INTO TB_USUARIO (nome) VALUES ${valores};
             `);
-            console.log('✅ Dados inseridos com sucesso!');
+            console.log('Dados inseridos com sucesso!');
             Alert.alert("Inserção", "Dados inseridos com sucesso!");
         } catch (erro) {
-            console.error('❌ Erro ao inserir:', erro);
+            console.error('Erro ao inserir:', erro);
             Alert.alert("Erro", "Erro ao inserir dados!");
         }
     }
@@ -67,10 +67,10 @@ const Banco = () => {
                 SET nome = '${alterar}'
                 WHERE nome = '${nome}';
             `);
-            console.log('✏️ Usuário editado com sucesso!');
+            console.log('Usuário editado com sucesso!');
             Alert.alert("Edição", "Usuário editado com sucesso!");
         } catch (erro) {
-            console.error('❌ Erro ao editar usuário:', erro);
+            console.error('Erro ao editar usuário:', erro);
             Alert.alert("Erro", "Erro ao editar usuário!");
         }
     }
@@ -81,6 +81,7 @@ const Banco = () => {
             const allRows = await db.getAllAsync('SELECT * FROM TB_USUARIO;');
     
             if (allRows.length === 0) {
+                console.log("Nenhum usuário encontrado.");
                 Alert.alert("Consulta", "Nenhum usuário encontrado.");
                 return;
             }
@@ -89,6 +90,7 @@ const Banco = () => {
                 .map(row => `ID: ${row.id} - Nome: ${row.nome}`)
                 .join('\n');
     
+            console.log("Usuários encontrados:\n" + dadosFormatados);
             Alert.alert("Usuários cadastrados", dadosFormatados);
         } catch (erro) {
             console.error("Erro ao selecionar dados:", erro);
@@ -96,14 +98,16 @@ const Banco = () => {
         }
     }
     
+    
 
     async function Selecionar(nome) { 
         db = await Banco();
         const firstRow = await db.getFirstAsync(`SELECT * FROM TB_USUARIO WHERE nome = '${nome}';`);
         if (firstRow) {
-            console.log(firstRow.id, firstRow.nome);
+            console.log("Usuário encontrado: ID: " + firstRow.id + " - Nome: " + firstRow.nome);
             Alert.alert("Consulta", `Usuário encontrado: ID - ${firstRow.id}, Nome: ${firstRow.nome}`);
         } else {
+            console.log("Nenhum usuário encontrado.");
             Alert.alert("Consulta", "Usuário não encontrado.");
         }
     }
@@ -114,10 +118,10 @@ const Banco = () => {
             await db.execAsync(`
                 DELETE FROM TB_USUARIO WHERE nome = '${nome}';
             `);
-            console.log(`🗑️ Usuários com nome "${nome}" deletados com sucesso!`);
+            console.log(`Usuários com nome "${nome}" deletados com sucesso!`);
             Alert.alert("Exclusão", `Usuário "${nome}" deletado com sucesso!`);
         } catch (erro) {
-            console.error('❌ Erro ao deletar usuários:', erro);
+            console.error('Erro ao deletar usuários:', erro);
             Alert.alert("Erro", "Erro ao deletar usuário!");
         }
     }
